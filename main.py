@@ -20,6 +20,7 @@ def main(conf):
     print("found {} new posts".format(len(new_posts)))
 
     for post in new_posts:
+        time.sleep(3)
         producer.send(post)
 
     print("done posting.")
