@@ -1,5 +1,5 @@
 # mha_postservice
-A lightweight service for posting items from an RSS feed to Discourse written in Python.
+A lightweight service for posting items from an RSS feed to Discourse,  written in Python.
 
 This is a data pump which reads items from a list of RSS feeds and posts those items to Discourse.
 It is built so that the core logic is agnostic as to its data sources and destination.
