@@ -1,0 +1,9 @@
+[Unit]
+Description=RSS to Discourse post service
+
+[Service]
+Type=simple
+User=ubuntu
+ExecStart=/usr/bin/python3 /home/ubuntu/mha_postservice/main.py --config /home/ubuntu/Dropbox/config.yaml
+Restart=on-abort
+

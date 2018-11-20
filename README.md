@@ -16,3 +16,9 @@ posts should be checked against the post IDs that have already been aggregated a
 
 In this app's case, the only real destination is Discourse, and Discourse already handles deduplication of content
 sent to it. Thus, a deduplication mechanism is not yet required, but will be if a new destination is added.
+
+### Deployment
+Included is a systemd .service file and an example config file.
+You will need to modify these files for your specifc needs.
+Simply fill out a config.yaml file for your Discourse subscripton and the RSS feeds you want to watch,
+and alter the User and ExecStart fields to work with your environment.
