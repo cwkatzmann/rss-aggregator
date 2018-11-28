@@ -1,13 +1,11 @@
 import requests
 import json
 
+from elasticsearch import Elasticsearch
 
 class ConsoleProducer:
-    def __init__(self, category):
-        self.category = category
-    
     def send(self, post):
-        print("category: " + self.category + "\npost: " + str(post))
+        print("post: " + str(post))
 
 class DiscourseProducer:
     def __init__(self, url, category):
@@ -15,6 +13,14 @@ class DiscourseProducer:
         self.url = url
     
     def send(self, post):
-        data = {"title": post.title, "raw": post.content, "category": self.category}
-        res = requests.post(self.url, headers={'content-type': 'application/json'}, data=json.dumps(data))
+        res = requests.post(self.url, headers={'content-type': 'application/json'}, post.json())
         print("sent post: {} got status: {}".format(post, res.status_code))
+
+class ElasticSearchProducer:
+    def __init__(self, url, index):
+        self.url = url
+        self.index = index
+        self.client = Elasticsearch()
+    
+    def send(self, post):
+        self.client.index(index=self.index, doc_type="json", id=post.id, body=post.json())

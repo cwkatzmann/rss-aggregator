@@ -2,16 +2,35 @@ import sys
 import time
 import yaml
 import argparse
-from consumers import RSSConsumer
-from producers import DiscourseProducer
+from consumers import RSSConsumer, RSSLinkContentConsumer, ConsoleConsumer
+from producers import DiscourseProducer, ElasticsearchProducer, ConsoleProducer
 
 
-def main(conf):
-    consumers = [
-        RSSConsumer(feed_addr)
-        for feed_addr in conf['rss_feeds']
-    ]
-    producer = DiscourseProducer(conf['discourse_url'], conf['topic_id'])
+def main(args, conf):
+    
+    # load consumer dependencies
+    if args.consumer == 'RSSConsumer'
+        consumers = [
+            RSSConsumer(feed_addr)
+            for feed_addr in conf['rss_feeds']
+        ]
+    elif args.consumer == 'RSSLinkContentConsumer':
+        consumers = [
+            RSSLinkContentConsumer(feed_addr)
+            for feed_addr in conf['rss_feeds']
+        ]
+    else:
+        consumers = [
+            ConsoleConsumer()
+        ]
+
+    # load producer dependencies
+    if args.producer == 'DiscourseProducer':
+        producer = DiscourseProducer(conf['discourse_url'], conf['topic_id'])
+    elif args.producer == 'ElasticsearchProducer':
+        producer = ElasticsearchProducer(args.producer_dest, '')
+    else:
+        producer = ConsoleProducer()
 
     new_posts = []
     for consumer in consumers:
@@ -20,6 +39,7 @@ def main(conf):
     print("found {} new posts".format(len(new_posts)))
 
     for post in new_posts:
+        # hard delay so we don't get ratelimited
         time.sleep(3)
         producer.send(post)
 
@@ -28,6 +48,12 @@ def main(conf):
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description="CLI argument parser")
     parser.add_argument('--config-file', dest='path_to_config_file', action='store', help='the relative path to the config file.')
+    parser.add_argument('--consumer', des='consumer', action='store', help='the consumer to be used',
+                        options=['ConsoleConsumer', 'RSSConsumer', 'RSSLinkContentConsumer'])
+    parser.add_argument('--producer', dest='producer', action='store', help='the producer to be used.',
+                        options=['ConsoleProducer', 'ElasticSearchProducer', 'DiscourseProducer'])
+
+    
     args = parser.parse_args(sys.argv[1:])
     
     next_run_time = 0
@@ -37,7 +63,7 @@ if __name__ == '__main__':
         if now > next_run_time:
             with open(args.path_to_config_file) as configfile:
                 conf = yaml.load(configfile)
-                main(conf)
+                main(args, conf)
                 next_run_time = now + conf['interval_in_seconds']
         
         time.sleep(5)
