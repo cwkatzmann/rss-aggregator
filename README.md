@@ -1,24 +1,32 @@
 # mha_postservice
-A lightweight service for posting items from an RSS feed to Discourse,  written in Python.
+A lightweight service for posting data from an RSS feed to configuration-driven destinations, written in Python.
 
-This is a data pump which reads items from a list of RSS feeds and posts those items to Discourse.
-It is built so that the core logic is agnostic as to its data sources and destination.
+### Suported Consumer Types:
+`RSSConsumer` - consumes the title, link, and description of RSS feed items.
+`RSSLinkContentConsumer` - follows the RSS feed items' links and consumes their title and the content returned by a request to the link urls.
+`ConsoleConsumer` - for development and manual testing. Prompts the user for input via stdin.
 
-For development and manual testing, I've included a ConsoleConsumer and ConsoleProducer, each of which
-have the same interface as their respective counterparts, RSSConsumer and DiscourseProducer.
-In the future this design will enable the service to support more source and destination types,
-and lays the groundwork for basic dependency injection.
+### Supported Producer Types:
+`ElasticsearchProducer` - produces data to Elasticsearch.
+`DiscourseProducer` - produces data to [Discourse](https://www.discourse.org/) in the form of a message board post.
+`ConsoleProducer` - for development and manual testing. Produces data to stdout.
 
-If you've worked with RSS aggregation before, you know that RSS feeds will simply return a list of the latest
-posted items when requested. As such, consecutive requests to the same feed are likely to return at least some of
-the same RSS posts. Typically, for deduplication, the posts' IDs should be persisted in a data store and incoming
-posts should be checked against the post IDs that have already been aggregated and stored.
-
-In this app's case, the only real destination is Discourse, and Discourse already handles deduplication of content
-sent to it. Thus, a deduplication mechanism is not yet required, but will be if a new destination is added.
-
-### Deployment
-Included is a systemd .service file and an example config file.
+### Deploy:
+Included is a systemd .service file and an example config.yaml file.
 You will need to modify these files for your specifc needs.
-Simply fill out a config.yaml file for your Discourse subscripton and the RSS feeds you want to watch,
-and alter the User and ExecStart fields to work with your environment.
+
+1) Alter the User and ExecStart fields to work with your environment in the service file.
+2) Provide a list of the urls for the RSS feeds you wish to aggregate in the config file.
+3) (optional) If you are using the Discourse producer, provide the url with api key for your Discourse instance in the config file.
+4) Choose the consumer you would like to use from the options specified above.
+5) Choose the producer from the options specified aboce.
+
+### Example run commands:
+Producing RSS link content to Elasticsearch:
+`python main.py --config-file ./config.yaml --consumer=RSSLinkContentConsumer --producer=ElasticsearchProducer --producer-dest=localhost:9200`
+
+Producing RSS titles, links, descriptions to Discourse:
+`python main.py --config-file ./config.yaml --consumer=RSSConsumer --producer=DiscourseProducer`
+
+Producing user-prompted stdin to stdout (KeyboardInterrupt to stop consumer)
+`python main.py --config-file ./config.yaml --consumer=ConsoleConsumer --producer=ConsoleProducer`
