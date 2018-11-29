@@ -13,7 +13,7 @@ class DiscourseProducer:
         self.url = url
     
     def send(self, post):
-        res = requests.post(self.url, headers={'content-type': 'application/json'}, post.json())
+        res = requests.post(self.url, headers={'content-type': 'application/json'}, body=post.json())
         print("sent post: {} got status: {}".format(post, res.status_code))
 
 class ElasticSearchProducer:

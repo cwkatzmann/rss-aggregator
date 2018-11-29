@@ -9,7 +9,7 @@ from producers import DiscourseProducer, ElasticsearchProducer, ConsoleProducer
 def main(args, conf):
     
     # load consumer dependencies
-    if args.consumer == 'RSSConsumer'
+    if args.consumer == 'RSSConsumer':
         consumers = [
             RSSConsumer(feed_addr)
             for feed_addr in conf['rss_feeds']
