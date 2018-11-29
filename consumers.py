@@ -1,6 +1,7 @@
 import time
 import json
 import datetime
+import requests
 import feedparser
 
 from DTOs import Post
@@ -36,8 +37,8 @@ class RSSLinkContentConsumer:
             
             if 200 <= response.status_code <= 299:
                 body = {
-                    text: response.text,
-                    _id: item.id
+                    "text": response.text,
+                    "_id": item.id
                 }
                 
                 posts.append(Post(item.title, body, item.id))
@@ -51,8 +52,6 @@ class RSSLinkContentConsumer:
 
 
 class ConsoleConsumer:
-    def __init__(self, url):
-        self.url = url
 
     def get_new_posts(self):
         """runs in an infinite loop until user breaks out"""

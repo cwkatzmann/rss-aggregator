@@ -28,7 +28,7 @@ def main(args, conf):
     if args.producer == 'DiscourseProducer':
         producer = DiscourseProducer(conf['discourse_url'], conf['topic_id'])
     elif args.producer == 'ElasticsearchProducer':
-        producer = ElasticsearchProducer(args.producer_dest, '')
+        producer = ElasticsearchProducer(args.producer_dest, 'rss')
     else:
         producer = ConsoleProducer()
 
@@ -42,16 +42,16 @@ def main(args, conf):
         # hard delay so we don't get ratelimited
         time.sleep(3)
         producer.send(post)
+        # TODO: save post id for later check
 
     print("done posting.")
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description="CLI argument parser")
     parser.add_argument('--config-file', dest='path_to_config_file', action='store', help='the relative path to the config file.')
-    parser.add_argument('--consumer', des='consumer', action='store', help='the consumer to be used',
-                        options=['ConsoleConsumer', 'RSSConsumer', 'RSSLinkContentConsumer'])
-    parser.add_argument('--producer', dest='producer', action='store', help='the producer to be used.',
-                        options=['ConsoleProducer', 'ElasticSearchProducer', 'DiscourseProducer'])
+    parser.add_argument('--consumer', dest='consumer', action='store', help='the consumer to be used. options: ConsoleConsumer, RSSConsumer, RSSLinkContentConsumer')
+    parser.add_argument('--producer', dest='producer', action='store', help='the producer to be used. options: ConsoleProducer, ElasticSearchProducer, DiscourseProducer')
+    parser.add_argument('--producer-dest', dest='producer_dest', action='store', help='the producer destination. url. currently only used by ElasticsearchProducer.')
 
     
     args = parser.parse_args(sys.argv[1:])

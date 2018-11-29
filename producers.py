@@ -16,7 +16,7 @@ class DiscourseProducer:
         res = requests.post(self.url, headers={'content-type': 'application/json'}, body=post.json())
         print("sent post: {} got status: {}".format(post, res.status_code))
 
-class ElasticSearchProducer:
+class ElasticsearchProducer:
     def __init__(self, url, index):
         self.url = url
         self.index = index
