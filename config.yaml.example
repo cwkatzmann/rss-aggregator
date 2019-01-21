@@ -1,6 +1,6 @@
 interval_in_seconds: 300
 discourse_url: 'https://your-discourse-address.com/posts.json'
-topic_id: 6
+category: 6
 sources:
   - sciencedaily:
     username: 'Science_Daily'

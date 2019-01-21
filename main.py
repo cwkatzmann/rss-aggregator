@@ -31,7 +31,7 @@ def main(args, conf):
 
     # load producer dependencies
     if args.producer == 'DiscourseProducer':
-        producer = DiscourseProducer(conf['discourse_url'], conf['topic_id'], conf['sources'])
+        producer = DiscourseProducer(conf['discourse_url'], conf['category'], conf['sources'])
     elif args.producer == 'ElasticsearchProducer':
         producer = ElasticsearchProducer(args.producer_dest, 'rss')
     else:
