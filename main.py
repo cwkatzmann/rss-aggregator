@@ -11,24 +11,27 @@ def main(args, conf):
     The entrypoint to the application.
     """
     # load consumer dependencies
+    consumers = []
     if args.consumer == 'RSSConsumer':
-        consumers = [
-            RSSConsumer(feed['url'])
-            for feed in conf['rss_feeds']
-        ]
+        for source in conf['sources']:
+            consumers += [
+                RSSConsumer(url)
+                for url in source['urls']
+            ]
     elif args.consumer == 'RSSLinkContentConsumer':
-        consumers = [
-            RSSLinkContentConsumer(feed_addr)
-            for feed_addr in conf['rss_feeds']
-        ]
+        for source in conf['sources']:
+            consumers += [
+                RSSLinkContentConsumer(url)
+                for url in source['urls']
+            ]
     else:
-        consumers = [
+        consumers += [
             ConsoleConsumer()
         ]
 
     # load producer dependencies
     if args.producer == 'DiscourseProducer':
-        producer = DiscourseProducer(conf['discourse_url'], conf['topic_id'], conf['rss_feeds'])
+        producer = DiscourseProducer(conf['discourse_url'], conf['topic_id'], conf['sources'])
     elif args.producer == 'ElasticsearchProducer':
         producer = ElasticsearchProducer(args.producer_dest, 'rss')
     else:

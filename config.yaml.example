@@ -1,8 +1,11 @@
 interval_in_seconds: 300
 discourse_url: 'https://your-discourse-address.com/posts.json'
 topic_id: 6
-rss_feeds:
-    - sciencedaily: # this should be a unique name for the feed
-    url: 'https://www.sciencedaily.com/rss/mind_brain/mental_health.xml'
+sources:
+  - sciencedaily:
     username: 'Science_Daily'
-    api_key: <enter api key here>
+    api_key: 'insert_api_key_here'
+    urls: 
+      - 'https://www.sciencedaily.com/rss/mind_brain/mental_health.xml'
+      - 'https://www.sciencedaily.com/rss/mind_brain/alcoholism.xml'
+      - 'https://www.sciencedaily.com/rss/mind_brain/anxiety.xml'

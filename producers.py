@@ -8,18 +8,19 @@ class ConsoleProducer:
         print("post: " + str(post))
 
 class DiscourseProducer:
-    def __init__(self, url, category, feeds):
-        self.category = category
+    def __init__(self, url, category, sources):
         self.url = url
-        self.feeds = feeds
+        self.category = category
+        self.sources = sources
 
     def send(self, post):
         username = ''
         api_key = ''
-        for feed in self.feeds:
-            if feed["url"] == post.source_url:
-                username = feed["username"]
-                api_key = feed["api_key"]
+        for source in self.sources:
+            for url in source['urls']:
+                if url == post.source_url:
+                    username = source['username']
+                    api_key = source['api_key']
 
         if not api_key or not username:
             print("could not locate api key or username for url: " + post.source_url)
