@@ -26,8 +26,6 @@ class DiscourseProducer:
             print("could not locate api key or username for url: " + post.source_url)
             pass
 
-        import pdb
-        pdb.set_trace()
         res = requests.post("{}?api_key={}&api_username={}".format(self.url, api_key, username),
                             headers={'content-type': 'application/json'},
                             data=json.dumps(
@@ -38,8 +36,6 @@ class DiscourseProducer:
                                 }
                                 )
                             )
-
-        pdb.set_trace()
 
         print("sent post: {} got status: {}".format(post, res.status_code))
 
