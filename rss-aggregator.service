@@ -5,5 +5,5 @@ Description=RSS to Discourse post service
 Type=simple
 User=ubuntu
 ExecStart=/usr/bin/python3 /path/to/mha_postservice/main.py --config /path/to/config.yaml
-Restart=on-abort
+Restart=always
 
