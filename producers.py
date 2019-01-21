@@ -28,7 +28,14 @@ class DiscourseProducer:
 
         res = requests.post("{}?api_key={}&api_username={}".format(self.url, api_key, username),
                             headers={'content-type': 'application/json'},
-                            data=post.json())
+                            data=json.dumps(
+                                {
+                                    "title": post.title,
+                                    "raw": post.content,
+                                    "category": self.category
+                                }
+                                )
+                            )
 
         print("sent post: {} got status: {}".format(post, res.status_code))
 
@@ -39,4 +46,4 @@ class ElasticsearchProducer:
         self.client = Elasticsearch()
     
     def send(self, post):
-        self.client.index(index=self.index, doc_type="json", id=post.id, body=post.json())
+        self.client.index(index=self.index, doc_type="json", id=post.id, body=post.content)
