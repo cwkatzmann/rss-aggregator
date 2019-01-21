@@ -17,7 +17,7 @@ class RSSConsumer:
         posts = []
         
         for item in rss.entries:
-            posts.append(Post(item.title, "{}\n{}".format(item.link, item.description)))
+            posts.append(Post(item.title, "{}\n{}".format(item.link, item.description), self.url))
 
         return posts
 
@@ -45,9 +45,10 @@ class RSSLinkContentConsumer:
         
         return posts
 
-
     def seen_before(_id):
-        """checks if a post with that id has been seen before."""
+        """
+        Checks if a post with that id has been seen before.
+        """
         pass
 
 

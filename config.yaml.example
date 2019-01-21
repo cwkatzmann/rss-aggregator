@@ -1,7 +1,8 @@
 interval_in_seconds: 300
-discourse_url: 'https://your-discourse-address.com/posts.json?api_key=your-api-key&api_username=your-username' # string
-topic_id: 6 # integer
-rss_feeds: # list of strings
- - https://first.rss.feed.address
- - https://second.rss.feed.address
- - https://third.rss.feed.address
+discourse_url: 'https://your-discourse-address.com/posts.json'
+topic_id: 6
+rss_feeds:
+    - sciencedaily: # this should be a unique name for the feed
+    url: 'https://www.sciencedaily.com/rss/mind_brain/mental_health.xml'
+    username: 'Science_Daily'
+    api_key: <enter api key here>
