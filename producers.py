@@ -3,9 +3,11 @@ import json
 
 from elasticsearch import Elasticsearch
 
+
 class ConsoleProducer:
     def send(self, post):
         print("post: " + str(post))
+
 
 class DiscourseProducer:
     def __init__(self, url, category, sources):
@@ -39,11 +41,12 @@ class DiscourseProducer:
 
         print("sent post: {} got status: {}".format(post, res.status_code))
 
+
 class ElasticsearchProducer:
     def __init__(self, url, index):
         self.url = url
         self.index = index
         self.client = Elasticsearch()
-    
+
     def send(self, post):
         self.client.index(index=self.index, doc_type="json", id=post.id, body=post.content)

@@ -2,11 +2,13 @@ import sys
 import time
 import yaml
 import argparse
+import sqlite3
 from consumers import RSSConsumer, RSSLinkContentConsumer, ConsoleConsumer
 from producers import DiscourseProducer, ElasticsearchProducer, ConsoleProducer
 
 
 def main(args, conf):
+
     """
     The entrypoint to the application.
     """
@@ -43,11 +45,13 @@ def main(args, conf):
 
     print("found {} new posts".format(len(new_posts)))
 
+    conn = sqlite3.connect('rss-aggregator.db')
+    c = conn.cursor
     for post in new_posts:
         # hard delay so we don't get ratelimited
         time.sleep(3)
         producer.send(post)
-        # TODO: save post id for later check
+        c.execute("INSERT INTO history VALUES (%s)" % post.id)
 
     print("done posting.")
 
@@ -67,6 +71,7 @@ if __name__ == '__main__':
                         help='the producer destination url. currently only used by ElasticsearchProducer.')
 
     args = parser.parse_args(sys.argv[1:])
+    
     next_run_time = 0
 
     while True:
