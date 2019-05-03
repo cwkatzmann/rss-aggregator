@@ -1,7 +1,11 @@
 interval_in_seconds: 300
-discourse_url: 'https://your-discourse-address.com/posts.json?api_key=your-api-key&api_username=your-username' # string
-topic_id: 6 # integer
-rss_feeds: # list of strings
- - https://first.rss.feed.address
- - https://second.rss.feed.address
- - https://third.rss.feed.address
+discourse_url: 'https://your-discourse-address.com/posts.json'
+category: 6
+sources:
+  - sciencedaily:
+    username: 'Science_Daily'
+    api_key: 'insert_api_key_here'
+    urls: 
+      - 'https://www.sciencedaily.com/rss/mind_brain/mental_health.xml'
+      - 'https://www.sciencedaily.com/rss/mind_brain/alcoholism.xml'
+      - 'https://www.sciencedaily.com/rss/mind_brain/anxiety.xml'
