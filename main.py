@@ -2,12 +2,13 @@ import sys
 import time
 import yaml
 import argparse
+import sqlite3
 from consumers import RSSConsumer, RSSLinkContentConsumer, ConsoleConsumer
 from producers import DiscourseProducer, ElasticsearchProducer, ConsoleProducer
 
 
 def main(args, conf):
-    
+
     # load consumer dependencies
     if args.consumer == 'RSSConsumer':
         consumers = [
@@ -38,13 +39,16 @@ def main(args, conf):
 
     print("found {} new posts".format(len(new_posts)))
 
+    conn = sqlite3.connect('rss-aggregator.db')
+    c = conn.cursor
     for post in new_posts:
         # hard delay so we don't get ratelimited
         time.sleep(3)
         producer.send(post)
-        # TODO: save post id for later check
+        c.execute("INSERT INTO history VALUES (%s)" % post.id)
 
     print("done posting.")
+
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description="CLI argument parser")
@@ -53,9 +57,8 @@ if __name__ == '__main__':
     parser.add_argument('--producer', dest='producer', action='store', help='the producer to be used. options: ConsoleProducer, ElasticSearchProducer, DiscourseProducer')
     parser.add_argument('--producer-dest', dest='producer_dest', action='store', help='the producer destination. url. currently only used by ElasticsearchProducer.')
 
-    
     args = parser.parse_args(sys.argv[1:])
-    
+
     next_run_time = 0
 
     while True:
@@ -65,6 +68,5 @@ if __name__ == '__main__':
                 conf = yaml.load(configfile)
                 main(args, conf)
                 next_run_time = now + conf['interval_in_seconds']
-        
+
         time.sleep(5)
-        
